@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package proto.v1.telemetry;
+
+option go_package = "github.com/To-ge/gr_ground_go/api/gen/go/v1";
+
+import "google/protobuf/empty.proto";
+
+
+service TelemetryService {
+    rpc SendLocation (stream SendLocationRequest) returns (google.protobuf.Empty); 
+}
+
+message SendLocationRequest {
+    int64 timestamp = 1;
+    double latitude = 2;
+    double longitude = 3;
+    float altitude = 4;
+}
+
