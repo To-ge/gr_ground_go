@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"log"
+	"math"
 	"time"
 
 	v1 "github.com/To-ge/gr_ground_go/api/gen/go/v1"
@@ -25,7 +26,7 @@ func LoopSendLocation() {
 			log.Fatalln("LocationCh is closed.")
 		}
 
-		timestamp := float64(time.Now().UnixMilli()) / 1000
+		timestamp := float64(time.Now().UnixMicro()) / math.Pow10(6)
 		pkg.OutputLocationLogger.Printf(",%f,%v,%v,%v\n", timestamp, location.GetLatitude(), location.GetLongitude(), location.GetAltitude())
 		if err := stream.Send(location); err != nil {
 			log.Printf("SendLocation stream.Send error: %v\n", err)

@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"log"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -105,6 +106,7 @@ func formatTelemetry(data string) (Telemetry, map[string]interface{}) {
 			log.Println("Required symbols not found in GPS data")
 			return Unknown, nil
 		}
+		index := strings.Split(content, "A")[0]
 		latitude := strings.Split(strings.Split(content, "A")[1], "B")[0]
 		longitude := strings.Split(strings.Split(content, "B")[1], "C")[0]
 		altitude := strings.Split(content, "C")[1]
@@ -112,12 +114,13 @@ func formatTelemetry(data string) (Telemetry, map[string]interface{}) {
 		latitude64, _ := strconv.ParseFloat(latitude, 64)
 		longitude64, _ := strconv.ParseFloat(longitude, 64)
 		altitude32, _ := (strconv.ParseFloat(altitude, 32))
-		timestamp := float64(time.Now().UnixMilli()) / 1000.0
+		timestamp := float64(time.Now().UnixMicro()) / math.Pow10(6)
 
-		pkg.InputLocationLogger.Printf(",%f,%v,%v,%v\n", timestamp, latitude64, longitude64, altitude32)
+		pkg.InputLocationLogger.Printf(",%f,%v,%v,%v,%v\n", timestamp, index, latitude64, longitude64, altitude32)
 
 		return Gps, map[string]interface{}{
 			"timestamp": int64(timestamp),
+			"index":     index,
 			"latitude":  latitude64,
 			"longitude": longitude64,
 			"altitude":  float32(altitude32),
